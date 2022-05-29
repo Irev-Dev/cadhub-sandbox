@@ -1,7 +1,11 @@
-on: [push]
+
+on: 
+  push:
+    tags:
+    - '*'
 
 jobs:
-  hello_world_job:
+  publish-openscad:
     runs-on: ubuntu-latest
     name: A job to say hello
     steps:
@@ -9,9 +13,13 @@ jobs:
       - name: Hello world action step
         id: hello
         uses: ./openscad/
-        # uses: actions/hello-world-docker-action@v1
         with:
           who-to-greet: 'Mona the Octocat'
       # Use the output from the `hello` step
       - name: Get the output time
         run: echo "The time was ${{ steps.hello.outputs.time }}"
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "./output.stl"
+          # bodyFile: "body.md"
+          token: ${{ secrets.GITHUB_TOKEN }}
